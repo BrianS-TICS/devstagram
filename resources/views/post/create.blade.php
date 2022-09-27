@@ -22,7 +22,7 @@
             </form>
         </div>
         <div class="md:w-1/2 bg-white p-10 rounded-lg shadow-md mt-10 md:mt-0">
-            <form action="{{ route('register') }}" method="POST">
+            <form action="{{ route('post.store') }}" method="POST">
                 @csrf
                 <div class="mb-5">
                     <label for="titulo" class="mb-2 block uppercase text-gray-600 font-bold">
@@ -52,6 +52,19 @@
                         {{ $message }}
                     </p>
                 @enderror
+
+                <div class="mb-5">
+                    <input
+                        type="hidden"
+                        name="imagen"
+                        value="{{ old('imagen') }}"
+                    >
+                    @error('imagen')
+                    <p class="bg-red-400 rounded-lg text-white font-semibold mb-5 text-sm p-3 text-center">
+                        {{ $message }}
+                    </p>
+                @enderror
+                </div>
 
                 <input type="submit" value="Crear publicacion"
                     class="uppercase p-3 bg-sky-600 transition-colors hover:bg-sky-700 cursor-pointer font-bold w-full text-white rounded-lg" />
