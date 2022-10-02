@@ -10,8 +10,6 @@
             <img src="{{ asset('img/registrar.jpg') }}" alt="imagen de registro">
         </div>
 
-        <h3>Hola</h3>
-
         <div class="md:w-4/12 bg-white p-6 rounded-lg shadow-md">
             <form action="{{ route('register') }}" method="POST">
                 @csrf
