@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('titulo')
-    Perfil: {{$user->username}}
+    Perfil: {{ $user->username }}
 @endsection
 
 @section('contenido')
@@ -10,7 +10,8 @@
             <div class="w-8/12 lg:w-6/12 px-5">
                 <img src="{{ asset('img/usuario.svg') }}" alt="Imagen de usuario">
             </div>
-            <div class="md:w-8/12 lg:w-6/12 px-5 flex flex-col items-center md:items-start py-10 md:py-0 md:justify-center md:gap-1">
+            <div
+                class="md:w-8/12 lg:w-6/12 px-5 flex flex-col items-center md:items-start py-10 md:py-0 md:justify-center md:gap-1">
                 <p class="text-gray-700 text-2xl capitalize">{{ $user->username }}</p>
                 <p class="text-gray-800 text-sm mb-1 font-bold mt-4">
                     0
@@ -29,5 +30,29 @@
         <div>
         </div>
     </div>
-@endsection
 
+    <section class="container mx-auto mt-10">
+        <h2 class="text-4xl text-center font-black my-10">Publicaciones</h2>
+
+        @if ($posts->count() > 0)
+            <div class="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                @foreach ($posts as $post)
+                    <div>
+                        <a href="">
+                            <img src="{{ asset('uploads') . '/' . $post->imagen }}"
+                                alt="imagen del post {{ $post->titulo }}">
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="my-10">
+                {{ $posts->links('pagination::tailwind') }}
+            </div>
+        @else
+            <p class="text-gray-600 uppercase text-sm text-center font-bold">No hay publicaciones</p>
+
+        @endif
+
+    </section>
+@endsection
