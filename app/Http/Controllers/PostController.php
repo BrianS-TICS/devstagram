@@ -6,17 +6,21 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+// * Util para la manipulacion de imagenes
+use Illuminate\Support\Facades\File;
+
 class PostController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['show','index']);
+        $this->middleware('auth')->except(['show', 'index']);
     }
 
-    public function index(User $user){
+    public function index(User $user)
+    {
 
         $posts = Post::where('user_id', $user->id)->paginate(18);
-        return view('layouts.dashboard',[
+        return view('layouts.dashboard', [
             'user' => $user,
             'posts' => $posts
         ]);
@@ -28,21 +32,22 @@ class PostController extends Controller
     }
 
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $this->validate($request, [
             'titulo' => 'required|max:255',
             'descripcion' => 'required',
             'imagen' => 'required'
         ]);
 
-        // Post::create([
+        // ? Post::create([
         //     'titulo' => $request->titulo,
         //     'descripcion' => $request->descripcion,
         //     'imagen' => $request->imagen,
         //     'user_id' => auth()->user()->id
         // ]);
 
-        // Otra forma
+        // ? Otra forma
 
         // $post = new Post;
         // $post->titulo = $request->titulo;
@@ -61,7 +66,7 @@ class PostController extends Controller
         return redirect()->route('posts.index', auth()->user()->username);
     }
 
-    public function show(User $user,Post $post)
+    public function show(User $user, Post $post)
     {
         return view('post.show', [
             'post' => $post,
@@ -69,6 +74,18 @@ class PostController extends Controller
         ]);
     }
 
+    // ? Uso de rout model binging
+    public function destroy(Post $post)
+    {
+        $this->authorize('delete', $post);
+        $post->delete();
 
+        $imagen_path = public_path('uploads/'. $post->imagen);
 
+        if(File::exists($imagen_path)){
+            unlink($imagen_path);
+        }
+
+        return redirect()->route('posts.index', auth()->user()->username);
+    }
 }
