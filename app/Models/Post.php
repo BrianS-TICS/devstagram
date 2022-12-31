@@ -29,4 +29,10 @@ class Post extends Model
     public function likes () {
         return $this->hasMany(Like::class);
     }
+
+    public function checkLike(User $user)
+    {
+        // * Busca en la tabla relacionada "Like" por concidencias con el usuario a utilizar
+        return $this->likes->contains('user_id', $user->id);
+    }
 }
