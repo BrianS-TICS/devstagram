@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ImagenController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\PerfilController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,10 +31,13 @@ Route::post('/register', [RegisterController::class, 'store']);
 // Al especificar el endpoint con name() es opcional volver a escribir el endpoint
 Route::get('/login', [LoginController::class, 'index'])->name("login");
 Route::post('/login', [LoginController::class, 'store']);
-
 Route::post('/logout', [LogoutController::class, 'store'])->name("logout");
 
-Route::get('/{user:username}', [PostController::class, 'index'])->name('posts.index');
+// * Edicion de perfil
+Route::get('/editar-Perfil', [PerfilController::class, 'index'])->name('perfil.index');
+Route::post('/editar-Perfil', [PerfilController::class, 'store'])->name('perfil.store');
+
+// * Publicaciones
 Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
 Route::post('/posts', [PostController::class, 'store'])->name('post.store');
 Route::get('/{user:username}/posts/{post}', [PostController::class, 'show'])->name('posts.show');
@@ -50,3 +54,7 @@ Route::post('/Imagenes', [ImagenController::class, 'store'])->name('imagen.store
 // * Likes a fotos
 Route::post('/posts/{post}/likes',[LikeController::class, 'store'])->name('posts.likes.store');
 Route::delete('/posts/{post}/likes',[LikeController::class, 'destroy'])->name('posts.likes.destroy');
+
+// ? Las variables quedan a la escucha por cualquier valor, pueden generar errores al no estar bien colocadas por gerarquia
+// ? Cuando tenemos una ruta de este tipo, Si el navegador no encontró la url en estas rutas tomara esta como la default
+Route::get('/{user:username}', [PostController::class, 'index'])->name('posts.index');
