@@ -8,7 +8,8 @@
     <div class="flex justify-center">
         <div class="w-full md:w-8/12 lg:w-6/12 flex flex-col items-center md:flex-row">
             <div class="w-8/12 lg:w-6/12 px-5">
-                <img src="{{ asset('img/usuario.svg') }}" alt="Imagen de usuario">
+                <img src="{{ $user->imagen ? asset('perfiles') . '/' . $user->imagen : asset('img/usuario.svg') }}"
+                    alt="Imagen de usuario">
             </div>
             <div
                 class="md:w-8/12 lg:w-6/12 px-5 flex flex-col items-center md:items-start py-10 md:py-0 md:justify-center md:gap-1">
@@ -18,7 +19,8 @@
                     @auth
                         {{-- * Se verifica que el usuario autenticado sea el mismo que el del dashboard --}}
                         @if ($user->id === auth()->user()->id)
-                            <a href="{{ route("perfil.index") }}" class="text-gray-500 hover:text-gray-700 transition-transform hover:scale-75">
+                            <a href="{{ route('perfil.index') }}"
+                                class="text-gray-500 hover:text-gray-700 transition-transform hover:scale-75">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                     stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -29,18 +31,42 @@
                     @endauth
                 </div>
 
+                {{-- * Usamos la instancia de usuario enviada desde postController | Linea 17 aprox --}}
                 <p class="text-gray-800 text-sm mb-1 font-bold mt-4">
-                    0
-                    <span class="font-normal">Seguidores</span>
+                    {{ $user->followers->count() }}
+                    <span class="font-normal"> @choice('Seguidor|Seguidores', $user->followers->count()) </span>
                 </p>
                 <p class="text-gray-800 text-sm mb-1 font-bold">
-                    0
+                    {{ $user->followings->count() }}
                     <span class="font-normal">Siguiendo</span>
                 </p>
                 <p class="text-gray-800 text-sm mb-1 font-bold">
-                    0
+                    {{ $user->posts->count() }}
                     <span class="font-normal">Publicaciones</span>
                 </p>
+
+                @auth
+                    @if ($user->id !== auth()->user()->id)
+                        {{-- Verifica si el usuario autenticado sigue al usuario propietario del dashboard --}}
+                        @if (!$user->siguiendo(auth()->user()))
+                            <form action="{{ route('users.follow', $user) }}" method="POST">
+                                @csrf
+                                <input type="submit"
+                                    class="bg-sky-600 mt-2 rounded-md cursor-pointer text-white uppercase px-3 py-1 font-bold"
+                                    value="Seguir">
+                            </form>
+                        @else
+                            <form action="{{ route('users.unfollow', $user) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <input type="submit"
+                                    class="bg-orange-600 mt-2 rounded-md cursor-pointer text-white uppercase px-3 py-1 font-bold"
+                                    value="Dejar de seguir">
+                            </form>
+                        @endif
+                    @endif
+                @endauth
+
             </div>
         </div>
         <div>
