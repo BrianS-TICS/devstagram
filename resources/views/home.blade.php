@@ -5,8 +5,6 @@
 @endsection
 
 @section('contenido')
-    Aqui
+    {{-- * Se hace uso de un componente para el listado de posts--}}
+    <x-listar-post :posts="$posts" />
 @endsection
-
-
-
